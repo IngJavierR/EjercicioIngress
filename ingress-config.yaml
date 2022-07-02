@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minimal-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /ordenes(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: ordenes-service-svc
+            port:
+              number: 8020
+      - path: /productos(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: productos-service-svc
+            port:
+              number: 8030
+  ingressClassName: nginx

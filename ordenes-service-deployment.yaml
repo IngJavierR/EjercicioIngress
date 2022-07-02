@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ordenes-service-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ordenes-service-pod
+  template:
+    metadata:
+      labels:
+        app: ordenes-service-pod
+    spec:
+      containers:
+      - name: ordenes-service-container
+        image: ingjavierr/ordenes-service:latest
+        ports:
+        - containerPort: 8020
+        imagePullPolicy: Always
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: dev
+        - name: HOST_IP_ADDRESS
+          value: localhost
+        - name: TZ
+          value: America/Mexico_City
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ordenes-service-svc
+spec:
+  selector:
+    app: ordenes-service-pod
+  ports:
+  - port: 8020
+    protocol: TCP
+    targetPort: 8020
+  type: ClusterIP

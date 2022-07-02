@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: usuarios-service-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: usuarios-service-pod
+  template:
+    metadata:
+      labels:
+        app: usuarios-service-pod
+    spec:
+      containers:
+      - name: usuarios-service-container
+        image: ingjavierr/usuarios-service:latest
+        ports:
+        - containerPort: 8010
+        imagePullPolicy: Always
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: dev
+        - name: TZ
+          value: America/Mexico_City
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: usuarios-service-svc
+spec:
+  selector:
+    app: usuarios-service-pod
+  ports:
+  - port: 8010
+    protocol: TCP
+    targetPort: 8010
+  type: ClusterIP
